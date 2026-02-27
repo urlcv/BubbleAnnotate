@@ -49,8 +49,10 @@ final class TimelineNSView: NSView {
 
     var totalHeight: CGFloat { rulerHeight + (trackHeight + trackGap) * 2 + trackGap }
 
+    var visibleWidth: CGFloat = 400
+
     var contentWidth: CGFloat {
-        max(400, CGFloat(duration) * pps + 80)
+        max(visibleWidth, leftMargin + contentLeftPad + CGFloat(duration) * pps + contentLeftPad)
     }
 
     override var intrinsicContentSize: NSSize {
@@ -137,20 +139,32 @@ final class TimelineNSView: NSView {
         let rect = CGRect(x: x, y: y, width: w, height: trackHeight)
         let isSelected = item.id == selectedID
 
+        let isArrow: Bool
+        let clipColor: NSColor
+        switch item.content {
+        case .bubble:
+            isArrow = false
+            clipColor = NSColor.controlAccentColor
+        case .arrow(let d):
+            isArrow = true
+            let c = d.style.color
+            clipColor = NSColor(red: c.red, green: c.green, blue: c.blue, alpha: 1)
+        }
+
         let path = CGPath(roundedRect: rect, cornerWidth: clipCornerRadius, cornerHeight: clipCornerRadius, transform: nil)
         let fillColor = isSelected
-            ? NSColor.controlAccentColor.withAlphaComponent(0.6)
-            : NSColor.controlAccentColor.withAlphaComponent(0.35)
+            ? clipColor.withAlphaComponent(0.65)
+            : clipColor.withAlphaComponent(0.35)
         ctx.addPath(path)
         ctx.setFillColor(fillColor.cgColor)
         ctx.fillPath()
 
-        if isSelected {
-            ctx.addPath(path)
-            ctx.setStrokeColor(NSColor.controlAccentColor.cgColor)
-            ctx.setLineWidth(1.5)
-            ctx.strokePath()
-        }
+        ctx.addPath(path)
+        ctx.setStrokeColor(clipColor.withAlphaComponent(isSelected ? 1.0 : 0.55).cgColor)
+        ctx.setLineWidth(isSelected ? 1.5 : 1.0)
+        ctx.strokePath()
+
+        _ = isArrow
 
         let label: String
         switch item.content {
@@ -410,6 +424,7 @@ final class TimelineScrollView: NSScrollView {
     }
 
     func updateContentSize() {
+        timelineContent.visibleWidth = contentView.bounds.width
         let w = timelineContent.contentWidth
         let h = timelineContent.totalHeight
         timelineContent.frame = NSRect(x: 0, y: 0, width: w, height: h)
@@ -426,7 +441,7 @@ struct TimelineView: NSViewRepresentable {
     let onSeek: (TimeInterval) -> Void
 
     func makeNSView(context: Context) -> TimelineScrollView {
-        let scrollView = TimelineScrollView(frame: NSRect(x: 0, y: 0, width: 600, height: 96))
+        let scrollView = TimelineScrollView(frame: NSRect(x: 0, y: 0, width: 600, height: 100))
         let content = scrollView.timelineContent
         content.frame = NSRect(x: 0, y: 0, width: max(400, CGFloat(state.duration) * state.timelineScale.pixelsPerSecond + 80), height: content.totalHeight)
         content.onSeek = { [weak state] time in

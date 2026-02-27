@@ -4,7 +4,7 @@ import Combine
 /// Timeline scale: pixels per second.
 struct TimelineScale {
     var pixelsPerSecond: Double
-    static let minPPS: Double = 50
+    static let minPPS: Double = 5
     static let maxPPS: Double = 500
     static let defaultPPS: Double = 120
 
@@ -14,6 +14,13 @@ struct TimelineScale {
 
     mutating func zoomOut() {
         pixelsPerSecond = max(TimelineScale.minPPS, pixelsPerSecond / 1.2)
+    }
+
+    mutating func fitToWidth(_ availableWidth: Double, duration: TimeInterval) {
+        guard duration > 0 else { return }
+        let margins: Double = 100
+        let pps = max(TimelineScale.minPPS, (availableWidth - margins) / duration)
+        pixelsPerSecond = min(TimelineScale.maxPPS, pps)
     }
 }
 
@@ -26,6 +33,7 @@ final class TimelineState: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var documentURL: URL?
     @Published var isSeeking: Bool = false
+    @Published var isTimelineFitToWindow: Bool = true
 
     let undoManager = UndoManager()
 
@@ -162,10 +170,17 @@ final class TimelineState: ObservableObject {
     }
 
     func zoomTimelineIn() {
+        isTimelineFitToWindow = false
         timelineScale.zoomIn()
     }
 
     func zoomTimelineOut() {
+        isTimelineFitToWindow = false
         timelineScale.zoomOut()
+    }
+
+    func fitTimelineToWidth(_ width: Double) {
+        isTimelineFitToWindow = true
+        timelineScale.fitToWidth(width, duration: duration)
     }
 }

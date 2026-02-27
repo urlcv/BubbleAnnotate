@@ -21,7 +21,12 @@ struct ContentView: View {
                 guard !state.isSeeking, abs(state.currentTime - t) > 0.03 else { return }
                 state.currentTime = t
             }
-            .onChange(of: playerVM.duration) { _, d in state.projectDuration = d }
+            .onChange(of: playerVM.duration) { _, d in
+                state.projectDuration = d
+                if d > 0 {
+                    state.fitTimelineToWidth(Double(timelineContainerWidth))
+                }
+            }
             .toolbar {
                 toolbarContentPart1
                 toolbarContentPart2
@@ -53,6 +58,8 @@ struct ContentView: View {
         }
     }
 
+    @State private var timelineContainerWidth: CGFloat = 600
+
     private var editorContent: some View {
         HSplitView {
             InspectorView(state: state, timelineEngine: timelineEngine)
@@ -60,17 +67,66 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 videoSection
                     .layoutPriority(1)
-                TimelineView(state: state, timelineEngine: timelineEngine, onSeek: { time in
-                    state.isSeeking = true
-                    playerVM.seek(to: time)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                        state.isSeeking = false
+                GeometryReader { geo in
+                    VStack(spacing: 0) {
+                        TimelineView(state: state, timelineEngine: timelineEngine, onSeek: { time in
+                            state.isSeeking = true
+                            playerVM.seek(to: time)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                state.isSeeking = false
+                            }
+                        })
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                        timelineControls
                     }
-                })
-                    .frame(maxWidth: .infinity, minHeight: 96, idealHeight: 96, maxHeight: 96)
+                    .onAppear { timelineContainerWidth = geo.size.width }
+                    .onChange(of: geo.size.width) { _, w in
+                        timelineContainerWidth = w
+                        if state.isTimelineFitToWindow {
+                            state.timelineScale.fitToWidth(Double(w), duration: state.duration)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 128, idealHeight: 128, maxHeight: 128)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    private var timelineControls: some View {
+        HStack(spacing: 8) {
+            Button(action: { state.fitTimelineToWidth(Double(timelineContainerWidth)) }) {
+                Image(systemName: "arrow.left.and.right.square")
+                    .font(.system(size: 12))
+            }
+            .buttonStyle(.plain)
+            .help("Fit to window")
+
+            Image(systemName: "minus.magnifyingglass")
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+
+            Slider(
+                value: Binding(
+                    get: { log2(state.timelineScale.pixelsPerSecond) },
+                    set: {
+                        state.isTimelineFitToWindow = false
+                        state.timelineScale.pixelsPerSecond = min(TimelineScale.maxPPS, max(TimelineScale.minPPS, pow(2, $0)))
+                    }
+                ),
+                in: log2(TimelineScale.minPPS)...log2(TimelineScale.maxPPS)
+            )
+            .frame(width: 140)
+            .controlSize(.mini)
+
+            Image(systemName: "plus.magnifyingglass")
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 3)
+        .background(Color(NSColor.controlBackgroundColor))
     }
 
     @ToolbarContentBuilder

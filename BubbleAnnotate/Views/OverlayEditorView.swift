@@ -58,6 +58,13 @@ private struct DraggableBubbleContent: View {
                         .multilineTextAlignment(data.style.textAlignment.textAlignment)
                         .padding(.horizontal, pad - 4)
                         .padding(.vertical, pad - 4)
+                        .onChange(of: editingText) { _, newText in
+                            if newText.contains("\n") {
+                                let cleaned = newText.replacingOccurrences(of: "\n", with: "")
+                                onUpdateBubbleText(item.id, cleaned)
+                                isEditing = false
+                            }
+                        }
                 } else {
                     HStack(alignment: .top, spacing: 6) {
                         if let emoji = data.leadingEmoji, !emoji.isEmpty {
@@ -116,6 +123,13 @@ private struct DraggableBubbleContent: View {
         // Commit edit when bubble is deselected (user clicked elsewhere)
         .onChange(of: isSelected) { _, selected in
             if !selected && isEditing {
+                onUpdateBubbleText(item.id, editingText)
+                isEditing = false
+            }
+        }
+        // Commit when focus leaves the TextEditor (click on video, etc.)
+        .onChange(of: editorFocused) { _, focused in
+            if !focused && isEditing {
                 onUpdateBubbleText(item.id, editingText)
                 isEditing = false
             }
@@ -314,6 +328,184 @@ private struct DraggableBubbleContent: View {
     }
 }
 
+private struct DraggableArrowContent: View {
+    let item: AnnotationItem
+    let data: ArrowData
+    let contentRect: CGRect
+    let isSelected: Bool
+    let onSelect: (AnnotationID?) -> Void
+    let onUpdateArrowGeometry: (AnnotationID, ArrowGeometry) -> Void
+
+    @State private var dragStartGeometry: ArrowGeometry?
+    @State private var dragMode: DragTarget = .none
+
+    private enum DragTarget { case none, body, startHandle, endHandle }
+
+    private let handleSize: CGFloat = 18
+    private let handleGrabRadius: CGFloat = 20
+    private let hitHalfWidth: CGFloat = 18
+
+    private var startPt: CGPoint {
+        CGPoint(x: contentRect.width * data.geometry.startX,
+                y: contentRect.height * (1 - data.geometry.startY))
+    }
+    private var endPt: CGPoint {
+        CGPoint(x: contentRect.width * data.geometry.endX,
+                y: contentRect.height * (1 - data.geometry.endY))
+    }
+
+    private func normX(_ x: CGFloat) -> Double { Double(max(0, min(1, x / contentRect.width))) }
+    private func normY(_ y: CGFloat) -> Double { Double(max(0, min(1, 1 - y / contentRect.height))) }
+
+    /// Expanded hit area: corridor around line + circles around endpoints
+    private var hitArea: Path {
+        let dx = endPt.x - startPt.x
+        let dy = endPt.y - startPt.y
+        let len = hypot(dx, dy)
+
+        var path = Path()
+
+        // Corridor along the line
+        if len > 1 {
+            let nx = (-dy / len) * hitHalfWidth
+            let ny = ( dx / len) * hitHalfWidth
+            path.move(to:    CGPoint(x: startPt.x + nx, y: startPt.y + ny))
+            path.addLine(to: CGPoint(x: endPt.x   + nx, y: endPt.y   + ny))
+            path.addLine(to: CGPoint(x: endPt.x   - nx, y: endPt.y   - ny))
+            path.addLine(to: CGPoint(x: startPt.x - nx, y: startPt.y - ny))
+            path.closeSubpath()
+        }
+
+        // Circles around endpoints for easy grabbing
+        let r = handleGrabRadius
+        path.addEllipse(in: CGRect(x: startPt.x - r, y: startPt.y - r, width: r * 2, height: r * 2))
+        path.addEllipse(in: CGRect(x: endPt.x - r, y: endPt.y - r, width: r * 2, height: r * 2))
+
+        return path
+    }
+
+    private func dragTarget(at location: CGPoint) -> DragTarget {
+        if isSelected {
+            let dStart = hypot(location.x - startPt.x, location.y - startPt.y)
+            let dEnd   = hypot(location.x - endPt.x,   location.y - endPt.y)
+            if dStart < handleGrabRadius { return .startHandle }
+            if dEnd   < handleGrabRadius { return .endHandle }
+        }
+        return .body
+    }
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+
+            // ── Selection highlight ──────────────────────────────────────
+            if isSelected {
+                ArrowShape(start: startPt, end: endPt, headSize: CGFloat(data.style.headSize))
+                    .stroke(Color.accentColor.opacity(0.35), lineWidth: CGFloat(data.style.thickness) + 10)
+                    .allowsHitTesting(false)
+            }
+
+            // ── Visible arrow ────────────────────────────────────────────
+            ArrowShape(start: startPt, end: endPt, headSize: CGFloat(data.style.headSize))
+                .stroke(data.style.color.swiftUI, style: StrokeStyle(
+                    lineWidth: CGFloat(data.style.thickness), lineCap: .round, lineJoin: .round,
+                    dash: data.style.isDashed ? [CGFloat(data.style.dashLength)] : []))
+                .allowsHitTesting(false)
+
+            // ── Endpoint handle visuals (no gestures — purely decorative) ─
+            if isSelected {
+                Circle()
+                    .fill(Color.white)
+                    .overlay(Circle().strokeBorder(Color.accentColor, lineWidth: 2))
+                    .frame(width: handleSize, height: handleSize)
+                    .position(x: startPt.x, y: startPt.y)
+                    .allowsHitTesting(false)
+
+                Circle()
+                    .fill(Color.accentColor)
+                    .overlay(Circle().strokeBorder(Color.white, lineWidth: 2))
+                    .frame(width: handleSize, height: handleSize)
+                    .position(x: endPt.x, y: endPt.y)
+                    .allowsHitTesting(false)
+            }
+
+            // ── Single unified hit zone for ALL interactions ─────────────
+            hitArea
+                .fill(Color.white.opacity(0.001))
+                .contentShape(hitArea)
+                .onTapGesture { onSelect(item.id) }
+                .highPriorityGesture(
+                    DragGesture(minimumDistance: 2, coordinateSpace: .local)
+                        .onChanged { value in
+                            if dragStartGeometry == nil {
+                                dragStartGeometry = data.geometry
+                                dragMode = dragTarget(at: value.startLocation)
+                                onSelect(item.id)
+                            }
+                            let base = dragStartGeometry!
+                            let tx = value.translation.width
+                            let ty = value.translation.height
+
+                            switch dragMode {
+                            case .body:
+                                let dx = Double(tx / contentRect.width)
+                                let dy = -Double(ty / contentRect.height)
+                                onUpdateArrowGeometry(item.id, ArrowGeometry(
+                                    startX: max(0, min(1, base.startX + dx)),
+                                    startY: max(0, min(1, base.startY + dy)),
+                                    endX:   max(0, min(1, base.endX   + dx)),
+                                    endY:   max(0, min(1, base.endY   + dy))
+                                ))
+                            case .startHandle:
+                                let bx = contentRect.width  * base.startX
+                                let by = contentRect.height * (1 - base.startY)
+                                onUpdateArrowGeometry(item.id, ArrowGeometry(
+                                    startX: normX(bx + tx),
+                                    startY: normY(by + ty),
+                                    endX: base.endX, endY: base.endY
+                                ))
+                            case .endHandle:
+                                let bx = contentRect.width  * base.endX
+                                let by = contentRect.height * (1 - base.endY)
+                                onUpdateArrowGeometry(item.id, ArrowGeometry(
+                                    startX: base.startX, startY: base.startY,
+                                    endX: normX(bx + tx),
+                                    endY: normY(by + ty)
+                                ))
+                            case .none:
+                                break
+                            }
+                        }
+                        .onEnded { _ in
+                            dragStartGeometry = nil
+                            dragMode = .none
+                        }
+                )
+                .onContinuousHover(coordinateSpace: .local) { phase in
+                    switch phase {
+                    case .active(let loc):
+                        let target = dragTarget(at: loc)
+                        switch target {
+                        case .startHandle, .endHandle: NSCursor.crosshair.set()
+                        case .body: NSCursor.openHand.set()
+                        case .none: NSCursor.arrow.set()
+                        }
+                    case .ended:
+                        NSCursor.arrow.set()
+                    }
+                }
+
+            // ── Label ────────────────────────────────────────────────────
+            if let label = data.label, !label.isEmpty {
+                Text(label).font(.system(size: 12)).padding(4).background(.ultraThinMaterial)
+                    .position(x: (startPt.x + endPt.x) / 2, y: (startPt.y + endPt.y) / 2)
+                    .allowsHitTesting(false)
+            }
+        }
+        .frame(width: contentRect.width, height: contentRect.height)
+        .offset(x: contentRect.minX, y: contentRect.minY)
+    }
+}
+
 /// Interactive overlay: draws annotations for current time, hit-testing, selection, and drag handles.
 struct OverlayEditorView: View {
     let annotations: [AnnotationItem]
@@ -328,14 +520,14 @@ struct OverlayEditorView: View {
         GeometryReader { geo in
             let contentRect = CGRect(origin: .zero, size: geo.size)
             ZStack(alignment: .topLeading) {
+                // Deselect background — lowest layer, only fires when annotations don't consume the tap
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { onSelect(nil) }
+
                 ForEach(visibleItems(in: contentRect)) { item in
                     editableAnnotationView(item: item, contentRect: contentRect)
                 }
-            }
-            .contentShape(Rectangle())
-            .onTapGesture { location in
-                let hit = hitTest(location: location, in: contentRect)
-                onSelect(hit)
             }
         }
     }
@@ -372,78 +564,14 @@ struct OverlayEditorView: View {
 
     private func editableArrow(item: AnnotationItem, data: ArrowData,
                                contentRect: CGRect, isSelected: Bool) -> some View {
-        let g = data.geometry
-        let startX = contentRect.minX + contentRect.width * g.startX
-        let startY = contentRect.minY + contentRect.height * (1 - g.startY)
-        let endX = contentRect.minX + contentRect.width * g.endX
-        let endY = contentRect.minY + contentRect.height * (1 - g.endY)
-
-        func normX(_ x: CGFloat) -> Double { Double((x - contentRect.minX) / contentRect.width) }
-        func normY(_ y: CGFloat) -> Double { Double(1 - (y - contentRect.minY) / contentRect.height) }
-
-        return ZStack {
-            ArrowShape(start: CGPoint(x: startX, y: startY), end: CGPoint(x: endX, y: endY),
-                       headSize: CGFloat(data.style.headSize))
-                .stroke(data.style.color.swiftUI, style: StrokeStyle(
-                    lineWidth: CGFloat(data.style.thickness), lineCap: .round, lineJoin: .round,
-                    dash: data.style.isDashed ? [CGFloat(data.style.dashLength)] : []))
-            if isSelected {
-                Circle().fill(Color.accentColor).frame(width: 12, height: 12).position(x: startX, y: startY)
-                    .gesture(DragGesture().onChanged { value in
-                        onUpdateArrowGeometry(item.id, ArrowGeometry(
-                            startX: normX(value.location.x), startY: normY(value.location.y),
-                            endX: g.endX, endY: g.endY))
-                    })
-                Circle().fill(Color.accentColor).frame(width: 12, height: 12).position(x: endX, y: endY)
-                    .gesture(DragGesture().onChanged { value in
-                        onUpdateArrowGeometry(item.id, ArrowGeometry(
-                            startX: g.startX, startY: g.startY,
-                            endX: normX(value.location.x), endY: normY(value.location.y)))
-                    })
-            }
-            if let label = data.label, !label.isEmpty {
-                Text(label).font(.system(size: 12)).padding(4).background(.ultraThinMaterial)
-                    .position(x: (startX + endX) / 2, y: (startY + endY) / 2)
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture { onSelect(item.id) }
+        DraggableArrowContent(
+            item: item,
+            data: data,
+            contentRect: contentRect,
+            isSelected: isSelected,
+            onSelect: onSelect,
+            onUpdateArrowGeometry: onUpdateArrowGeometry
+        )
     }
 
-    private func hitTest(location: CGPoint, in contentRect: CGRect) -> AnnotationID? {
-        let items = visibleItems(in: contentRect).reversed()
-        for item in items {
-            switch item.content {
-            case .bubble(let data):
-                let g = data.geometry
-                let x = contentRect.minX + contentRect.width * g.originX
-                let y = contentRect.minY + contentRect.height * (1 - g.originY - g.height)
-                let w = contentRect.width * g.width
-                let h = contentRect.height * g.height
-                if location.x >= x && location.x <= x + w && location.y >= y && location.y <= y + h {
-                    return item.id
-                }
-            case .arrow(let data):
-                let g = data.geometry
-                let sx = contentRect.minX + contentRect.width * g.startX
-                let sy = contentRect.minY + contentRect.height * (1 - g.startY)
-                let ex = contentRect.minX + contentRect.width * g.endX
-                let ey = contentRect.minY + contentRect.height * (1 - g.endY)
-                if distanceFromPoint(location, toSegment: (CGPoint(x: sx, y: sy), CGPoint(x: ex, y: ey))) < 20 {
-                    return item.id
-                }
-            }
-        }
-        return nil
-    }
-
-    private func distanceFromPoint(_ p: CGPoint, toSegment seg: (CGPoint, CGPoint)) -> CGFloat {
-        let (a, b) = seg
-        let d = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y)
-        if d == 0 { return hypot(p.x - a.x, p.y - a.y) }
-        var t = ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / d
-        t = max(0, min(1, t))
-        let proj = CGPoint(x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y))
-        return hypot(p.x - proj.x, p.y - proj.y)
-    }
 }

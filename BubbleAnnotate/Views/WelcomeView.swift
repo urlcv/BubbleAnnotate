@@ -42,10 +42,30 @@ struct WelcomeView: View {
 
             Spacer()
 
-            Text("⌘? for keyboard shortcuts")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-                .padding(.bottom, 20)
+            VStack(spacing: 6) {
+                Text("⌘? for keyboard shortcuts")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+
+                HStack(spacing: 4) {
+                    Text("A tool by")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.tertiary)
+                    Button("URLCV") {
+                        if let url = URL(string: "https://urlcv.com") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .underline()
+                    .onHover { hovering in
+                        if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                    }
+                }
+            }
+            .padding(.bottom, 20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(NSColor.windowBackgroundColor))

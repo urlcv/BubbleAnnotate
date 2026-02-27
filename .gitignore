@@ -1,6 +1,20 @@
-.DS_Store
-xcuserdata/
-*.xcuserstate
+# Xcode
 build/
 DerivedData/
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+
+# macOS
+.DS_Store
+*.swp
+*~.nib
+
+# Swift Package Manager
 .build/
+Packages/
+Package.resolved
