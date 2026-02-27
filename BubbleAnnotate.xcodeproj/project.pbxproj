@@ -1,0 +1,329 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BFA1 = {isa = PBXBuildFile; fileRef = A2BubbleAnnotateApp; };
+		BFA2 = {isa = PBXBuildFile; fileRef = A2ContentView; };
+		BFA3 = {isa = PBXBuildFile; fileRef = A2Annotation; };
+		BFA4 = {isa = PBXBuildFile; fileRef = A2BubbleStyle; };
+		BFA5 = {isa = PBXBuildFile; fileRef = A2ArrowStyle; };
+		BFA6 = {isa = PBXBuildFile; fileRef = A2Project; };
+		BFA7 = {isa = PBXBuildFile; fileRef = A2TimelineState; };
+		BFA8 = {isa = PBXBuildFile; fileRef = A2ProjectPersistence; };
+		BFA9 = {isa = PBXBuildFile; fileRef = A2TimelineEngine; };
+		BFAA = {isa = PBXBuildFile; fileRef = A2ExportEngine; };
+		BFAB = {isa = PBXBuildFile; fileRef = A2OverlayRenderer; };
+		BFAC = {isa = PBXBuildFile; fileRef = A2ExportOverlayBuilder; };
+		BFAD = {isa = PBXBuildFile; fileRef = A2VideoPlayerView; };
+		BFAE = {isa = PBXBuildFile; fileRef = A2OverlayEditorView; };
+		BFAF = {isa = PBXBuildFile; fileRef = A2TimelineView; };
+		BFB0 = {isa = PBXBuildFile; fileRef = A2InspectorView; };
+		BFB1 = {isa = PBXBuildFile; fileRef = A2ExportSheet; };
+		BFB2 = {isa = PBXBuildFile; fileRef = A2Assets; };
+		BFB3 = {isa = PBXBuildFile; fileRef = A2ColorEditorView; };
+		BFB4 = {isa = PBXBuildFile; fileRef = A2ColorWellPickerView; };
+		BFB5 = {isa = PBXBuildFile; fileRef = A2KeyboardShortcutsHelpView; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A2BubbleAnnotateApp = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleAnnotateApp.swift; sourceTree = "<group>"; };
+		A2ContentView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A2Annotation = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
+		A2BubbleStyle = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleStyle.swift; sourceTree = "<group>"; };
+		A2ArrowStyle = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowStyle.swift; sourceTree = "<group>"; };
+		A2Project = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		A2TimelineState = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineState.swift; sourceTree = "<group>"; };
+		A2ProjectPersistence = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectPersistence.swift; sourceTree = "<group>"; };
+		A2TimelineEngine = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineEngine.swift; sourceTree = "<group>"; };
+		A2ExportEngine = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportEngine.swift; sourceTree = "<group>"; };
+		A2OverlayRenderer = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayRenderer.swift; sourceTree = "<group>"; };
+		A2ExportOverlayBuilder = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportOverlayBuilder.swift; sourceTree = "<group>"; };
+		A2VideoPlayerView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		A2OverlayEditorView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayEditorView.swift; sourceTree = "<group>"; };
+		A2TimelineView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
+		A2InspectorView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorView.swift; sourceTree = "<group>"; };
+		A2ExportSheet = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSheet.swift; sourceTree = "<group>"; };
+		A2ColorEditorView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorEditorView.swift; sourceTree = "<group>"; };
+		A2ColorWellPickerView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWellPickerView.swift; sourceTree = "<group>"; };
+		A2KeyboardShortcutsHelpView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHelpView.swift; sourceTree = "<group>"; };
+		A2InfoPlist = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2Assets = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2BubbleAnnotate = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BubbleAnnotate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A3Frameworks = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A0Main = {
+			isa = PBXGroup;
+			children = (
+				A0BubbleAnnotate,
+				A3Products,
+			);
+			sourceTree = "<group>";
+		};
+		A0BubbleAnnotate = {
+			isa = PBXGroup;
+			children = (
+				A2BubbleAnnotateApp,
+				A2ContentView,
+				A0Models,
+				A0Views,
+				A0Engine,
+				A0Renderer,
+				A0Persistence,
+				A2InfoPlist,
+				A2Assets,
+				A4Entitlements,
+			);
+			path = BubbleAnnotate;
+			sourceTree = "<group>";
+		};
+		A0Models = {
+			isa = PBXGroup;
+			children = ( A2Annotation, A2BubbleStyle, A2ArrowStyle, A2Project, A2TimelineState );
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A0Views = {
+			isa = PBXGroup;
+			children = ( A2VideoPlayerView, A2ColorEditorView, A2ColorWellPickerView, A2KeyboardShortcutsHelpView, A2OverlayEditorView, A2TimelineView, A2InspectorView, A2ExportSheet );
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A0Engine = {
+			isa = PBXGroup;
+			children = ( A2TimelineEngine, A2ExportEngine );
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		A0Renderer = {
+			isa = PBXGroup;
+			children = ( A2OverlayRenderer, A2ExportOverlayBuilder );
+			path = Renderer;
+			sourceTree = "<group>";
+		};
+		A0Persistence = {
+			isa = PBXGroup;
+			children = ( A2ProjectPersistence );
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		A3Products = {
+			isa = PBXGroup;
+			children = ( A2BubbleAnnotate );
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4Entitlements = {
+			isa = PBXGroup;
+			children = ( A5EntitlementsFile );
+			name = Entitlements;
+			sourceTree = "<group>";
+		};
+		A5EntitlementsFile = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BubbleAnnotate.entitlements; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6BubbleAnnotateTarget = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7BuildConfList;
+			buildPhases = (
+				A8Sources,
+				A3Frameworks,
+				A9Resources,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BubbleAnnotate;
+			productName = BubbleAnnotate;
+			productReference = A2BubbleAnnotate;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AAProject = {
+			isa = PBXProject;
+			attributes = { BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1500; LastUpgradeCheck = 1500; };
+			buildConfigurationList = ABProjBuildConfList;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = ( en, Base );
+			mainGroup = A0Main;
+			productRefGroup = A3Products;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = ( A6BubbleAnnotateTarget );
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A9Resources = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFB2,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A8Sources = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFA1,
+				BFA2,
+				BFA3,
+				BFA4,
+				BFA5,
+				BFA6,
+				BFA7,
+				BFA8,
+				BFA9,
+				BFAA,
+				BFAB,
+				BFAC,
+				BFAD,
+				BFAE,
+				BFAF,
+				BFB0,
+				BFB1,
+				BFB3,
+				BFB4,
+				BFB5,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		ACDebug = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = BubbleAnnotate/BubbleAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ( "DEBUG=1", "$(inherited)" );
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		ACRelease = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = BubbleAnnotate/BubbleAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		ADDebug = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BubbleAnnotate/BubbleAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BubbleAnnotate/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025.";
+				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/../Frameworks" );
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bubbleannotate.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		ADRelease = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BubbleAnnotate/BubbleAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BubbleAnnotate/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025.";
+				LD_RUNPATH_SEARCH_PATHS = ( "$(inherited)", "@executable_path/../Frameworks" );
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bubbleannotate.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A7BuildConfList = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( ADDebug, ADRelease );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ABProjBuildConfList = {
+			isa = XCConfigurationList;
+			buildConfigurations = ( ACDebug, ACRelease );
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AAProject;
+}
