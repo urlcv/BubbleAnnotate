@@ -28,16 +28,34 @@ Download the latest release from the [Releases](https://github.com/urlcv/BubbleA
 
 ### First Launch
 
-Since the app is not signed with an Apple Developer ID, macOS will show a warning the first time you open it. To bypass this:
+BubbleAnnotate is open-source software distributed outside the Mac App Store. macOS will show a security warning the first time you open it. This is normal — follow the steps below for your macOS version.
 
-1. **Right-click** (or Control-click) `BubbleAnnotate.app` and select **Open**
-2. Click **Open** in the dialog that appears
+#### macOS Sequoia (15.0+)
 
-You only need to do this once. Alternatively, run in Terminal:
+1. Double-click the app — macOS will show **"BubbleAnnotate" Not Opened**. Click **Done**
+2. Open **System Settings** → **Privacy & Security**
+3. Scroll down to the **Security** section — you'll see *"BubbleAnnotate" was blocked*
+4. Click **Open Anyway** and enter your password
+5. The app will launch. You won't be asked again
+
+#### macOS Sonoma (14.0)
+
+1. **Right-click** (or Control-click) `BubbleAnnotate.app` in Finder
+2. Select **Open** from the context menu
+3. A dialog appears — click **Open**
+4. The app will launch. You won't be asked again
+
+#### Alternative: Terminal
+
+If the above doesn't work, open Terminal and run:
 
 ```
 xattr -cr /Applications/BubbleAnnotate.app
 ```
+
+Then double-click the app as normal. This removes the download quarantine flag.
+
+> **Why does this happen?** macOS requires apps to be signed with a paid Apple Developer ID ($99/year). BubbleAnnotate is free and open-source, so it isn't signed. The app is safe — you can [review the source code](https://github.com/urlcv/BubbleAnnotate) yourself.
 
 ## Usage
 
