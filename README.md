@@ -26,6 +26,19 @@ Download the latest release from the [Releases](https://github.com/urlcv/BubbleA
 - macOS 14.0 (Sonoma) or later
 - Apple Silicon or Intel Mac
 
+### First Launch
+
+Since the app is not signed with an Apple Developer ID, macOS will show a warning the first time you open it. To bypass this:
+
+1. **Right-click** (or Control-click) `BubbleAnnotate.app` and select **Open**
+2. Click **Open** in the dialog that appears
+
+You only need to do this once. Alternatively, run in Terminal:
+
+```
+xattr -cr /Applications/BubbleAnnotate.app
+```
+
 ## Usage
 
 1. Launch the app and click **Import Video** or **Open Project**
