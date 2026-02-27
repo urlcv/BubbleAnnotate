@@ -28,6 +28,7 @@
 		BFB3 = {isa = PBXBuildFile; fileRef = A2ColorEditorView; };
 		BFB4 = {isa = PBXBuildFile; fileRef = A2ColorWellPickerView; };
 		BFB5 = {isa = PBXBuildFile; fileRef = A2KeyboardShortcutsHelpView; };
+		BFB6 = {isa = PBXBuildFile; fileRef = A2WelcomeView; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		A2ColorEditorView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorEditorView.swift; sourceTree = "<group>"; };
 		A2ColorWellPickerView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWellPickerView.swift; sourceTree = "<group>"; };
 		A2KeyboardShortcutsHelpView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutsHelpView.swift; sourceTree = "<group>"; };
+		A2WelcomeView = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		A2InfoPlist = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A2Assets = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2BubbleAnnotate = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BubbleAnnotate.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,7 +102,7 @@
 		};
 		A0Views = {
 			isa = PBXGroup;
-			children = ( A2VideoPlayerView, A2ColorEditorView, A2ColorWellPickerView, A2KeyboardShortcutsHelpView, A2OverlayEditorView, A2TimelineView, A2InspectorView, A2ExportSheet );
+			children = ( A2VideoPlayerView, A2ColorEditorView, A2ColorWellPickerView, A2KeyboardShortcutsHelpView, A2OverlayEditorView, A2TimelineView, A2InspectorView, A2ExportSheet, A2WelcomeView );
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -210,6 +212,7 @@
 				BFB3,
 				BFB4,
 				BFB5,
+				BFB6,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
